@@ -1,8 +1,12 @@
-# ID 87826952
-def get_input() -> tuple[int, str]:
-    """
-    Get the input. Returns k - count of keys
-    and sequence of values.
+'''ID 87846776'''
+from typing import Tuple, Dict, Set
+
+
+def get_input() -> Tuple[int, str]:
+    """Get data fromthe input.
+
+    Returns:
+        Tuple[int, str]: Data from the input
     """
     k: int = int(input()) * 2
     sequence: str = ''.join([input() for _ in range(4)])
@@ -10,24 +14,33 @@ def get_input() -> tuple[int, str]:
 
 
 def get_score(k: int, sequence: str) -> int:
-    """Get the score."""
-    unique_of_sequence: set = set(sequence)
-    keys_count: dict = {element: 0 for element in unique_of_sequence}
+    """Get the score.
 
+    Args:
+        k (int): The number of buttons that players can press
+        sequence (str): String of Playing field
+
+    Returns:
+        int: Final score of the game
+    """
+    keys_count: Dict[str, int] = {}
+    outsiders: Set[str] = {'.', }
     for element in sequence:
-        keys_count[element] += 1
+        if element not in outsiders:
+            if element not in keys_count:
+                keys_count[element] = 1
+            else:
+                keys_count[element] += 1
 
-    for key in unique_of_sequence:
-        if key == '.' or keys_count[key] > k:
-            del keys_count[key]
+            if keys_count[element] > k:
+                del keys_count[element]
+                outsiders.add(element)
 
     return len(keys_count)
 
 
 def main() -> None:
     """Main program."""
-    k: int = 0
-    sequence: str = ''
     k, sequence = get_input()
     print(get_score(k, sequence))
 
