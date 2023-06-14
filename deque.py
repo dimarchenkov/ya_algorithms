@@ -112,8 +112,8 @@ def get_input() -> Tuple[int, int]:
     Returns:
         Tuple[int, int]: Data from the input
     """
-    command_count = int(input())
-    max_size = int(input())
+    command_count: int = int(input())
+    max_size: int = int(input())
     return command_count, max_size
 
 
