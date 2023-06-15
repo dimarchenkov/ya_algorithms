@@ -1,13 +1,13 @@
-"""ID some 88200610"""
-from typing import Callable, Dict, Type
+"""ID some 88229901"""
+
+from typing import Type
 
 
 class Stack:
     """Class representing stack"""
 
     def __init__(self):
-        self.__operands = []
-        self.__size = 0
+        self.items = []
 
     def push(self, item) -> None:
         """Add an item to the stack.
@@ -15,8 +15,7 @@ class Stack:
         Args:
             item (int): integer value
         """
-        self.__size += 1
-        self.__operands.append(item)
+        self.items.append(item)
 
     def pop(self) -> int:
         """Outputs the first element of the stack and delete it.
@@ -24,38 +23,43 @@ class Stack:
         Returns:
             int: First item in the stack
         """
-        if self.is_empty():
-            return 'error'
-        self.__size -= 1
-        return self.__operands.pop()
+        return self.items.pop()
 
-    def is_empty(self) -> bool:
-        """Checks if the stack is empty.
 
-        Returns:
-            bool: True if the stack is empty, False otherwise
-        """
-        return self.__size == 0
+def calc_function(stack: Type[Stack], expression: str) -> int:
+    """Does calculations.
+
+    Args:
+        stack (Type[Stack]): Class stack
+        expression (str): Expression in Danish notation
+
+    Returns:
+        int: Calculating result
+    """
+
+    for item in expression:
+        if item not in ['+', '-', '/', '*']:
+            stack.push(int(item))
+        elif item in '*':
+            stack.push(stack.pop() * stack.pop())
+        elif item == '+':
+            stack.push(stack.pop() + stack.pop())
+        elif item == '-':
+            second_argument = stack.pop()
+            first_argument = stack.pop()
+            stack.push(first_argument - second_argument)
+        elif item == '/':
+            second_argument = stack.pop()
+            first_argument = stack.pop()
+            stack.push(first_argument // second_argument)
+    return stack.pop()
 
 
 def main() -> None:
     """Main function."""
-    operations: Dict[str, Callable[[int, int], int]] = {
-        '+': lambda x, y: x + y,
-        '-': lambda x, y: y - x,
-        '*': lambda x, y: x * y,
-        '/': lambda x, y: y // x
-    }
-
     stack: Type[Stack] = Stack()
-
-    for item in input().split():
-        if item.lstrip('-').isdigit():
-            stack.push(int(item))
-        else:
-            stack.push(operations[item](stack.pop(), stack.pop()))
-
-    print(stack.pop())
+    expression: str = input().split()
+    print(calc_function(stack, expression))
 
 
 if __name__ == '__main__':
