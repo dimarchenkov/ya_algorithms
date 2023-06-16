@@ -1,21 +1,22 @@
-"""ID some 88229901"""
+"""ID 88266245"""
 
-from typing import Type
+import operator
+from typing import Dict, Callable
 
 
 class Stack:
     """Class representing stack"""
 
     def __init__(self):
-        self.items = []
+        self.__items = []
 
-    def push(self, item) -> None:
+    def push(self, item: int) -> None:
         """Add an item to the stack.
 
         Args:
             item (int): integer value
         """
-        self.items.append(item)
+        self.__items.append(item)
 
     def pop(self) -> int:
         """Outputs the first element of the stack and delete it.
@@ -23,10 +24,18 @@ class Stack:
         Returns:
             int: First item in the stack
         """
-        return self.items.pop()
+        return self.__items.pop()
+
+    def peek(self) -> int:
+        """Outputs the first element of the stack
+
+        Returns:
+            int: First item in the stack
+        """
+        return self.__items[-1]
 
 
-def calc_function(stack: Type[Stack], expression: str) -> int:
+def calc_function(stack: Stack, expression: str) -> int:
     """Does calculations.
 
     Args:
@@ -37,28 +46,26 @@ def calc_function(stack: Type[Stack], expression: str) -> int:
         int: Calculating result
     """
 
+    operations: Dict[str, Callable[[int, int], int]] = {
+        '+': operator.add,
+        '-': operator.sub,
+        '/': operator.floordiv,
+        '*': operator.mul,
+    }
+
     for item in expression:
-        if item not in ['+', '-', '/', '*']:
+        if item not in operations:
             stack.push(int(item))
-        elif item in '*':
-            stack.push(stack.pop() * stack.pop())
-        elif item == '+':
-            stack.push(stack.pop() + stack.pop())
-        elif item == '-':
-            second_argument = stack.pop()
-            first_argument = stack.pop()
-            stack.push(first_argument - second_argument)
-        elif item == '/':
-            second_argument = stack.pop()
-            first_argument = stack.pop()
-            stack.push(first_argument // second_argument)
-    return stack.pop()
+        else:
+            second_argument, first_argument = stack.pop(), stack.pop()
+            stack.push(operations[item](first_argument, second_argument))
+    return stack.peek()
 
 
 def main() -> None:
     """Main function."""
-    stack: Type[Stack] = Stack()
-    expression: str = input().split()
+    stack: Stack = Stack()
+    expression: list = input().split()
     print(calc_function(stack, expression))
 
 
