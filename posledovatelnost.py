@@ -1,14 +1,20 @@
-def check_strings(s,t):
-    pass
+def compare(s, t):
 
+    lens, lent = len(s), len(t)
+    i = 0
+    for j in range(lent):
+        if s[i] == t[j]:
+            i += 1
+            if i == lens:
+                return True
+
+    return False
 
 def main():
-    s = int(input())
-    t = input().split()
+    s = input()
+    t = input()
 
-    check_strings(s,t)
-    total = ''.join(str(i) for i in result)
-    print(total)
+    print(compare(s,t))
 
 
 if __name__ == '__main__':
