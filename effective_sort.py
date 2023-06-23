@@ -1,84 +1,85 @@
-"""ID some ID"""
+"""ID 88490774"""
 import random
 
-def find_pivot(arr):
-    if len(arr) < 5:
-        return random.randint(arr[0], arr[len(arr)-1])
-    arr_pivots = [0] * 3
-    arr_pivots[0] = arr[0]
-    arr_pivots[1] = arr[len(arr)//2]
-    arr_pivots[2] = arr[len(arr)-1]
-    for i in range(2):
-        for j in range(2-i):
-            if arr_pivots[j] > arr_pivots[j+1]:
-                arr_pivots[j], arr_pivots[j+1] = arr_pivots[j+1], arr_pivots[j]
-    return arr_pivots[1]
 
-# def partition(arr, pivot):
-#     left, right, center = [], [], []
-#     for i, elem in enumerate(arr):
-#         if elem < pivot:
-#             left.append(arr[i])
-#         if elem == pivot:
-#             center.append(arr[i])
-#         if elem > pivot:
-#             right.append(arr[i])
+class Intern:
+    def __init__(self, name, points, fines):
+        self.name = name
+        self.points = points
+        self.fines = fines
 
-#     return left, center, right
+    def __gt__(self, other):
+        if self.points == other.points:
+            if self.fines == other.fines:
+                return self.name < other.name
+            else:
+                return self.fines < other.fines
+        else:
+            return self.points > other.points
+
+    def __lt__(self, other):
+        if self.points == other.points:
+            if self.fines == other.fines:
+                return self.name > other.name
+            else:
+                return self.fines > other.fines
+        else:
+            return self.points < other.points
 
 
-def effective_sort(arr, low, high):
+def effective_sort(arr, base_left, base_right):
 
-    # if arr_len < 2:
-    #     return arr
-
-    # pivot = find_pivot(arr)
-    # left = 0
-    # right = arr_len-1
-
-    # while left != right:
-    #     while arr[left] < pivot:
-    #         left += 1
-
-    #     while arr[right] > pivot:
-    #         right -= 1
-
-    #     if arr[left] > arr[right]:
-    #         arr[left], arr[right] = arr[right], arr[left]
-
-    # effective_sort(arr[:left], len(arr[:left]))
-    # effective_sort(arr[right:], len(arr[right:]))
-
-    if low >= high:
+    if base_left >= base_right:
         return -1
 
-    left, right = low, high
-    pivot = arr[random.randint(low, high)]
+    left, right = base_left, base_right
+    pivot = arr[random.randint(base_left, base_right)]
 
     while left < right:
         while arr[left] < pivot:
             left += 1
         while arr[right] > pivot:
             right -= 1
-        arr[left], arr[right] = arr[right], arr[left]
-        left += 1
-        right -= 1
-    effective_sort(arr, low, right)
-    effective_sort(arr, left, high)
-    print(arr)
+        if left <= right:
+            arr[left], arr[right] = arr[right], arr[left]
+            right -= 1
+            left += 1
+            #if arr[left][1] < arr[right][1]:
+            #    arr[left], arr[right] = arr[right], arr[left]
+            #if arr[left][1] == arr[right][1] and arr[left][2] > arr[right][2]:
+            #    arr[left], arr[right] = arr[right], arr[left]
+            #left += 1
+            #right -= 1
+    effective_sort(arr, base_left, right)
+    effective_sort(arr, left, base_right)
 
 
 def main():
     """Main func."""
-    # arr_len = int(input())
-    arr = [1, 4, 5, 6, 3, 2, 9]
-    # arr = list(map(int, input().split()))
+    arr_len = int(input())
+    arr = [input().split() for _ in range(arr_len)]
+    interns = [Intern(i[0], int(i[1]), int(i[2])) for i in arr]
 
-    effective_sort(arr, 0, 6)
-    print(arr)
-    # for name in result:
-    #    print(name)
+    effective_sort(interns, 0, arr_len-1)
+
+    for intern in reversed(interns):
+        print(intern.name)
+
+def test():
+    interns = [
+        Intern('alla', 4, 100),
+        Intern('gena', 6, 1000),
+        Intern('gosha', 2, 90),
+        Intern('rita', 2, 90),
+        Intern('timofey', 4, 80),
+    ]
+    effective_sort(interns, 0, 4)
+    print('\n')
+
+    for intern in reversed(interns):
+        print(intern.name)
 
 
 if __name__ == '__main__':
     main()
+    #test()
