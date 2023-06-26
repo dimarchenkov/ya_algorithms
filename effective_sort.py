@@ -1,85 +1,81 @@
-"""ID 88490774"""
+"""ID 88522868"""
 import random
+from dataclasses import dataclass
 
 
+@dataclass
 class Intern:
-    def __init__(self, name, points, fines):
-        self.name = name
-        self.points = points
-        self.fines = fines
+    """Class for interns."""
+    name: str
+    points: int
+    fines: int
 
-    def __gt__(self, other):
-        if self.points == other.points:
-            if self.fines == other.fines:
-                return self.name < other.name
-            else:
-                return self.fines < other.fines
-        else:
-            return self.points > other.points
+    def __repr__(self) -> str:
+        """Reruns string representation of an object."""
+        return self.name
 
-    def __lt__(self, other):
-        if self.points == other.points:
-            if self.fines == other.fines:
-                return self.name > other.name
-            else:
-                return self.fines > other.fines
-        else:
-            return self.points < other.points
+    # без конвертации в int: bad operand type for unary -: 'str'
+    # если конвертить в lt получаем TL на
+    def __post_init__(self) -> None:
+        """Converting str to int."""
+        self.points = int(self.points)
+        self.fines = int(self.fines)
 
-
-def effective_sort(arr, base_left, base_right):
-
-    if base_left >= base_right:
-        return -1
-
-    left, right = base_left, base_right
-    pivot = arr[random.randint(base_left, base_right)]
-
-    while left < right:
-        while arr[left] < pivot:
-            left += 1
-        while arr[right] > pivot:
-            right -= 1
-        if left <= right:
-            arr[left], arr[right] = arr[right], arr[left]
-            right -= 1
-            left += 1
-            #if arr[left][1] < arr[right][1]:
-            #    arr[left], arr[right] = arr[right], arr[left]
-            #if arr[left][1] == arr[right][1] and arr[left][2] > arr[right][2]:
-            #    arr[left], arr[right] = arr[right], arr[left]
-            #left += 1
-            #right -= 1
-    effective_sort(arr, base_left, right)
-    effective_sort(arr, left, base_right)
+    def __lt__(self, other) -> bool:
+        """Comparison function."""
+        return (
+            (-self.points, self.fines, self.name)
+            < (-other.points, other.fines, other.name)
+        )
 
 
-def main():
+def effective_sort(arr: list) -> None:
+    """Efficient sorting algorithm."""
+    def _eff_sort(left_board: int, right_board: int):
+        if left_board >= right_board:
+            return -1
+
+        left: int = left_board
+        right: int = right_board
+        pivot: int = arr[random.randint(left, right)]
+
+        while left < right:
+            while arr[left] < pivot:
+                left += 1
+            while arr[right] > pivot:
+                right -= 1
+            if left <= right:
+                arr[left], arr[right] = arr[right], arr[left]
+                right -= 1
+                left += 1
+
+        _eff_sort(left_board, right)
+        _eff_sort(left, right_board)
+
+    return _eff_sort(0, len(arr)-1)
+
+
+def main() -> None:
     """Main func."""
-    arr_len = int(input())
-    arr = [input().split() for _ in range(arr_len)]
-    interns = [Intern(i[0], int(i[1]), int(i[2])) for i in arr]
+    arr_len: int = int(input())
+    arr: list = [Intern(*input().split()) for _ in range(arr_len)]
+    effective_sort(arr)
+    print(*arr, sep='\n')
 
-    effective_sort(interns, 0, arr_len-1)
 
-    for intern in reversed(interns):
-        print(intern.name)
-
-def test():
-    interns = [
-        Intern('alla', 4, 100),
-        Intern('gena', 6, 1000),
-        Intern('gosha', 2, 90),
-        Intern('rita', 2, 90),
-        Intern('timofey', 4, 80),
+def test() -> None:
+    """Testing and debugging function."""
+    interns: Intern = [
+        Intern('alla', '0', '0'),
+        Intern('gena', '0', '1000'),
+        Intern('gosha', '2', '0'),
+        Intern('rita', '2', '90'),
+        Intern('timofey', '4', '80'),
     ]
-    effective_sort(interns, 0, 4)
-    print('\n')
-
-    for intern in reversed(interns):
-        print(intern.name)
+    effective_sort(interns)
+    print(*interns, sep='\n')
 
 
 if __name__ == '__main__':
     main()
-    #test()
+    # test()

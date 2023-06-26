@@ -1,31 +1,38 @@
 import random
 
+from dataclasses import dataclass
 
+
+@dataclass
 class Intern:
-    def __init__(self, name, points, fines):
-        self.name = name
-        self.points = points
-        self.fines = fines
+    name: str
+    points: int
+    fines: int
 
     def __gt__(self, other):
+        return (
+            (-self.points, self.fines, self.name)
+            < (-other.points, other.fines, other.name)
+        )
+    # def __gt__(self, other):
 
-        if self.points == other.points:
-            if self.fines == other.fines:
-                return self.name < other.name
-            else:
-                return self.fines < other.fines
-        else:
-            return self.points > other.points
+    #     if self.points == other.points:
+    #         if self.fines == other.fines:
+    #             return self.name < other.name
+    #         else:
+    #             return self.fines < other.fines
+    #     else:
+    #         return self.points > other.points
 
-    def __lt__(self, other):
+    # def __lt__(self, other):
 
-        if self.points == other.points:
-            if self.fines == other.fines:
-                return self.name > other.name
-            else:
-                return self.fines > other.fines
-        else:
-            return self.points < other.points
+    #     if self.points == other.points:
+    #         if self.fines == other.fines:
+    #             return self.name > other.name
+    #         else:
+    #             return self.fines > other.fines
+    #     else:
+    #         return self.points < other.points
 
 
 
@@ -39,17 +46,20 @@ def main():
 
     intern3 = Intern('dkma', 10, 0)
 
-    alla = Intern('alla', 4, 100),
-    gena = Intern('gena', 6, 1000),
-    gosha = Intern('gosha', 2, 90),
-    rita = Intern('rita', 2, 90),
-    timofey = Intern('timofey', 4, 80),
+    alla = Intern('alla', 4, 100)
+    gena = Intern('gena', 6, 1000)
+    gosha = Intern('gosha', 2, 90)
+    rita = Intern('rita', '2', '90')
 
-    print(alla > timofey)
-    print(alla < timofey)
+    timofey = Intern('timofey', 4, 80)
 
-    print(gosha > rita)
-    print(gosha < rita)
+    print(type(rita.name))
+
+    # print(alla > timofey)
+    # print(alla < timofey)
+
+    # print(gosha > rita)
+    # print(gosha < rita)
 
 
 
